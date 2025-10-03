@@ -1,0 +1,89 @@
+Amazon Product Review Categorization Pipeline
+This project is a complete data engineering and machine learning pipeline that solves the task of categorizing Amazon product reviews. It demonstrates a multi-step, resilient solution that handles data cleaning, web scraping, and NLP-based classification.
+
+Project Overview
+The goal of this project is to take a large CSV file of Amazon reviews (originally from the "Amazon Fine Food Reviews" dataset) and assign a product category to each unique product ID.
+
+The final solution is a hybrid approach that uses strategic web scraping to build a balanced training dataset and then trains a machine learning model to predict categories for the entire dataset.
+
+The Pipeline
+The project is orchestrated by a master shell script, run_project.sh, which executes the following Python scripts in order:
+
+step_1_elt.py - Data Cleaning:
+
+Reads the raw Reviews.csv in memory-efficient chunks.
+
+Strips all HTML tags and entities from the review text.
+
+Saves a clean Cleaned_Reviews.csv file.
+
+step_2_webscraping_labelled_training_data.py - Targeted Data Acquisition:
+
+Scans the cleaned review text for keywords related to under-represented categories (e.g., "Pet Supplies", "Beauty").
+
+Creates a prioritized list of products to scrape, ensuring a more balanced dataset.
+
+Uses a Selenium headless browser to scrape the Amazon product page for each targeted product to get its category.
+
+Saves the scraped, labeled data to product_categories_standardized.csv.
+
+step_2.5_training_parameter_tuning_optional.py - Hyperparameter Tuning (Optional):
+
+Tests multiple settings for the NLP model's max_features parameter to find the optimal vocabulary size.
+
+Reports the setting that yields the highest accuracy on a test set.
+
+step_3_NLP_data_classification.py - Model Training & Prediction:
+
+Trains a Logistic Regression classifier on the balanced, labeled data from Step 2.
+
+Uses class_weight='balanced' to handle data imbalance.
+
+Evaluates the model's accuracy.
+
+Uses the trained model to predict the category for all ~74,000 unique products.
+
+Saves the final, complete list of products and their predicted categories to reviews_with_predicted_categories.csv.
+
+How to Run
+Prerequisites:
+
+A Linux environment (tested on ChromeOS Linux Subsystem).
+
+Python 3.
+
+Google Chrome browser installed in the Linux environment.
+
+Instructions:
+
+Clone the repository:
+
+git clone <your-repo-url>
+cd <your-repo-name>
+
+Create and activate a Python virtual environment:
+
+python3 -m venv venv
+source venv/bin/activate
+
+Install dependencies:
+
+pip install -r requirements.txt
+
+Place the data file:
+
+Create a directory named client_files.
+
+Place your raw Reviews.csv file inside the client_files directory.
+
+Run the master script:
+You can run the pipeline in two modes:
+
+Auto Mode (Recommended): This will run the tuning script to find the best max_features setting automatically.
+
+chmod +x run_project.sh
+./run_project.sh auto
+
+Manual Mode: This will skip tuning and use a specific value for max_features.
+
+./run_project.sh 1000

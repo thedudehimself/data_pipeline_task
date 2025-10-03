@@ -1,0 +1,16 @@
+Ignore Python virtual environments
+venv/
+venv_test/
+
+Ignore Python cache files
+pycache/
+*.pyc
+
+Ignore large data files and output files
+The raw data should not be committed to the repository.
+client_files/Reviews.csv
+
+
+Ignore the downloaded software
+
+software_install_files/
