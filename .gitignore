@@ -12,5 +12,7 @@ client_files/Reviews.csv
 
 
 Ignore the downloaded software
-
 software_install_files/
+
+Ignore presentation files
+presentation.html

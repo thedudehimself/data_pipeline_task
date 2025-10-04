@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Presentation: Amazon Review Categorization</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 4rem;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            visibility: hidden;
+        }
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .slide-content {
+            max-width: 900px;
+            width: 100%;
+        }
+        h2 {
+            font-weight: 700;
+        }
+        .talking-point {
+            background-color: #f3f4f6; /* gray-100 */
+            border-left: 4px solid #3b82f6; /* blue-500 */
+            padding: 1rem;
+            margin-top: 2rem;
+            font-style: italic;
+            color: #4b5563; /* gray-600 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Slide 1: Title Slide -->
+    <div class="slide active">
+        <div class="slide-content text-center">
+            <h1 class="text-5xl font-bold text-blue-600">Solving the Amazon Reviews Task</h1>
+            <p class="text-2xl mt-4 text-gray-600">An Engineering Journey</p>
+            <hr class="my-8 border-gray-200">
+            <p class="text-xl">A Technical Walkthrough for the First Protege Systems Engineer Role</p>
+            <p class="text-lg mt-2">Mike Wakefield</p>
+            <p class="text-lg text-gray-500">October 6, 2025</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: The Objective -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2 class="text-4xl text-gray-800">The Objective: More Than Just Code</h2>
+            <div class="mt-8">
+                <h3 class="text-2xl font-semibold mb-2 text-blue-600">My Goal Today</h3>
+                <p class="text-xl text-gray-700 mb-8">To walk you through the engineering process, strategic decisions, and final architecture used to solve the Amazon Reviews task.</p>
+                
+                <h3 class="text-2xl font-semibold mb-2 text-blue-600">Agenda</h3>
+                <ul class="list-decimal list-inside text-xl space-y-2 text-gray-700">
+                    <li>Deconstructing the Problem</li>
+                    <li>The Engineering Journey: A story of strategy, failure, and adaptation</li>
+                    <li>The Final Architecture</li>
+                    <li>Key Takeaways</li>
+                </ul>
+            </div>
+            <div class="talking-point">
+                <strong>(Talking Point):</strong> "My goal today isn't just to show you the final code, but to walk you through the real-world engineering journey—from the initial plan to diagnosing problems and pivoting to the best possible solution."
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Deconstructing the Problem -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2 class="text-4xl text-gray-800">Deconstructing the Problem & The Initial Strategy</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-blue-600">The Core Request</h3>
+                    <ul class="list-disc list-inside text-xl space-y-2 text-gray-700">
+                        <li>Clean 500,000+ HTML reviews.</li>
+                        <li>Categorize ~74,000 unique products without a lookup table.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-blue-600">The Constraints (from Richard)</h3>
+                    <ul class="list-disc list-inside text-xl space-y-2 text-gray-700">
+                        <li><span class="text-red-500 font-semibold">No API Access:</span> The most reliable method was off the table.</li>
+                        <li><span class="font-semibold">1-Day Timeframe:</span> Speed of delivery was critical.</li>
+                        <li><span class="font-semibold">>80% Accuracy Goal, 90%+ a Stretch Goal:</span> The final result needed to be trustworthy.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 p-6 bg-blue-50 rounded-lg">
+                <h3 class="text-2xl font-semibold text-blue-700">My Recommended Strategy: A Hybrid Approach</h3>
+                <p class="text-xl mt-2 text-gray-700">Based on the constraints, I proposed a <strong>Web Scraping + NLP</strong> hybrid. The plan was to scrape a small "ground truth" dataset, then use that labelled data to train a machine learning model that could predict the rest. <br> <br>This seemed like the fastest path to a complete, accurate solution.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 4: The Journey Pt. 1 -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2 class="text-4xl text-gray-800">The Journey Pt. 1: Foundational ETL & Data Discovery</h2>
+            <ul class="text-xl space-y-6 mt-8 text-gray-700">
+                <li class="p-4 bg-white rounded-lg shadow-sm">
+                    <span class="font-bold text-blue-600">Step 0: Data-First Approach (`step_0_data_discovery.py`)</span><br>
+                    Before writing any processing code, I started by analyzing the raw data. This immediately revealed the scale of the problem and the high percentage of messy HTML content, confirming the need for a robust cleaning pipeline.
+                </li>
+                <li class="p-4 bg-white rounded-lg shadow-sm">
+                    <span class="font-bold text-blue-600">Step 1: Building a Scalable Cleaning Pipeline (`step_1_elt.py`)</span><br>
+                    I built a script using Python and Pandas to process the data in <strong>memory-efficient chunks</strong>, ensuring it could handle a file of any size without crashing. The script successfully stripped all HTML, producing a clean `Cleaned_Reviews.csv`.
+                </li>
+            </ul>
+            <div class="talking-point">
+                <strong>(Talking Point):</strong> "I believe in a 'measure twice, cut once' approach. The initial discovery step was crucial because it informed the design of the entire pipeline and prevented future surprises. Identifing and mitigating the blockers to success before building is key."
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 5: The Journey Pt. 2 -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2 class="text-4xl text-gray-800">The Journey Pt. 2: The "Aha!" Moment</h2>
+            <div class="text-xl space-y-6 mt-8 text-gray-700">
+                <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p><span class="font-bold text-red-600">The Problem:</span> The first NLP model produced a <strong>92% accuracy score</strong>, but the output was clearly wrong—it predicted "Grocery & Gourmet Food" for almost everything.</p>
+                </div>
+                <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p><span class="font-bold text-yellow-600">The Diagnosis:</span> I didn't trust the misleading metric. I wrote a <strong>diagnostic script</strong> to investigate the training data we had scraped.</p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <p><span class="font-bold text-green-600">The Insight:</span> The analysis <strong>proved</strong> that our training data was over 90% food-related. The model wasn't broken; it was just perfectly reflecting the heavy bias in the data it was given.</p>
+                </div>
+            </div>
+            <div class="talking-point">
+                <strong>(Talking Point):</strong> "This was the most critical pivot point. The data showed that continuing down the initial path would mean delivering a complete, but fundamentally flawed and untrustworthy, dataset. As an engineer, my responsibility is to deliver value, and a model that's always wrong isn't valuable."
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 6: The Journey Pt. 3 -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2 class="text-4xl text-gray-800">The Journey Pt. 3: The Pivot to Intelligent Data Acquisition</h2>
+            <ul class="text-xl space-y-6 mt-8 text-gray-700">
+                <li><strong class="text-blue-600">The New Strategy:</strong> The diagnosis showed that random sampling for training data was a failing strategy. The solution was to stop scraping randomly and start scraping <strong>strategically</strong>.</li>
+                <li><strong class="text-blue-600">The Implementation (`step_2_webscraping...py`):</strong>
+                    <ul class="list-disc list-inside ml-6 mt-2 space-y-2">
+                        <li>I re-engineered the scraping phase to use a <strong>targeted acquisition</strong> approach.</li>
+                        <li>The script now pre-scans all 500,000 reviews for keywords related to our under-represented categories (like "dog," "shampoo," "toy").</li>
+                        <li>This creates a prioritized "shopping list" of products to scrape, guaranteeing a more balanced and intelligent training dataset for the model.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 7: The Final Result -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2 class="text-4xl text-gray-800">The Final Result & System Architecture</h2>
+            <div class="mt-8 text-center">
+                <p class="text-xl text-gray-600">The final model, retrained on this new, more balanced dataset, achieved:</p>
+                <p class="text-7xl font-bold text-green-500 my-4">97%</p>
+                <p class="text-2xl font-semibold">Final Model Accuracy</p>
+            </div>
+            <div class="mt-8">
+                <h3 class="text-2xl font-semibold text-center mb-4 text-blue-600">System Flowchart</h3>
+                <div class="text-center text-lg p-4 bg-gray-100 rounded-lg font-mono">
+                    Raw Data 
+                    <span class="font-bold mx-2 text-blue-500">&rarr;</span> Step 0: Discover 
+                    <span class="font-bold mx-2 text-blue-500">&rarr;</span> Step 1: Clean 
+                    <span class="font-bold mx-2 text-blue-500">&rarr;</span> Step 2: Scrape Targeted Data 
+                    <span class="font-bold mx-2 text-blue-500">&rarr;</span> Step 2.5: Tune 
+                    <span class="font-bold mx-2 text-blue-500">&rarr;</span> Step 3: Predict 
+                    <span class="font-bold mx-2 text-green-500">&rarr;</span> Final Output
+                </div>
+            </div>
+             <p class="text-xl mt-8 text-center text-gray-700"><strong>The Deliverable:</strong> A complete, categorized list of all products, generated by a model proven to be highly accurate.</p>
+        </div>
+    </div>
+
+    <!-- Slide 8: Key Features -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2 class="text-4xl text-gray-800">Key Features of the Final System</h2>
+            <p class="text-xl mt-4 text-gray-600">This project wasn't just about writing scripts; it was about building a professional, reusable system.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <div class="p-4 bg-white rounded-lg shadow-sm">
+                    <h3 class="text-2xl font-bold text-blue-600">✅ Fully Automated</h3>
+                    <p class="text-lg mt-2">The entire pipeline is run with a single command (`./interview_task.sh`).</p>
+                </div>
+                 <div class="p-4 bg-white rounded-lg shadow-sm">
+                    <h3 class="text-2xl font-bold text-blue-600">✅ Configurable & Flexible</h3>
+                    <p class="text-lg mt-2">The master script accepts arguments for different run modes: `--noscrape`, `auto`, and `--final`.</p>
+                </div>
+                 <div class="p-4 bg-white rounded-lg shadow-sm">
+                    <h3 class="text-2xl font-bold text-blue-600">✅ Reproducible</h3>
+                    <p class="text-lg mt-2">Includes a `requirements.txt` file for a consistent and reliable setup for any user.</p>
+                </div>
+                 <div class="p-4 bg-white rounded-lg shadow-sm">
+                    <h3 class="text-2xl font-bold text-blue-600">✅ Version Controlled</h3>
+                    <p class="text-lg mt-2">The entire project is packaged in a clean, professional Git repository.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Thank You -->
+    <div class="slide">
+        <div class="slide-content text-center">
+            <h2 class="text-5xl font-bold text-blue-600">Thank You</h2>
+            <p class="text-3xl mt-4 text-gray-600">Questions?</p>
+
+            <!-- New QR Code and Link -->
+            <a href="https://github.com/thedudehimself/data_pipeline_task" target="_blank" rel="noopener noreferrer" class="mt-12 block group">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://github.com/thedudehimself/data_pipeline_task" alt="GitHub Repository QR Code" class="mx-auto rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
+                <p class="mt-4 text-lg text-blue-500 group-hover:underline">View Project on GitHub</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-sm border-t border-gray-200">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <button id="prevBtn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+            <div id="slideCounter" class="text-gray-600 font-medium">Slide 1 / 9</div>
+            <button id="nextBtn" class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideCounter = document.getElementById('slideCounter');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            slideCounter.textContent = `Slide ${index + 1} / ${totalSlides}`;
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === totalSlides - 1;
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        prevBtn.addEventListener('click', prevSlide);
+        nextBtn.addEventListener('click', nextSlide);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
+
