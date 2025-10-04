@@ -13,7 +13,7 @@ STEP0_SCRIPT="step_0_data_discovery.py"
 STEP1_SCRIPT="step_1_elt.py"
 STEP2_SCRIPT="step_2_webscraping_labelled_training_data.py"
 STEP2_5_SCRIPT="step_2.5_training_parameter_tuning_optional.py"
-STEP3_SCRIPT="step_3_NLP_data_classification.py"
+STEP3_SCRIPT="step_3_NLP_data_classification_arg.py"
 DATA_ARCHIVE="client_files/pre_scraped_data.zip"
 RAW_DATA_FILE="client_files/Reviews.csv"
 
