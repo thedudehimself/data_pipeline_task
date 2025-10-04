@@ -4,16 +4,17 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
 import sys
-import argparse # <-- New import for handling arguments
+import argparse
 
 # --- Configuration ---
 CLEANED_REVIEWS_FILE = './client_files/Cleaned_Reviews.csv'
 LABELED_CATEGORIES_FILE = './client_files/product_categories_standardized.csv'
 FINAL_OUTPUT_FILE = './client_files/reviews_with_predicted_categories.csv'
 
-def main(max_features_value):
+def main(max_features_value, is_final_run):
     """
-    Trains a balanced NLP model using a specified max_features value.
+    Trains a balanced NLP model and predicts categories.
+    Outputs a final, lean CSV if is_final_run is True.
     """
     print("\n--- Phase 2: Training NLP Model on Balanced Data ---")
     try:
@@ -40,7 +41,6 @@ def main(max_features_value):
         
         # 3. Feature Extraction (TF-IDF)
         print(f"Vectorizing text using TF-IDF with max_features = {max_features_value}...")
-        # --- MODIFICATION: Use the value passed into the function ---
         tfidf = TfidfVectorizer(stop_words='english', max_features=max_features_value, ngram_range=(1, 2))
         X_train_tfidf = tfidf.fit_transform(X_train)
         X_test_tfidf = tfidf.transform(X_test)
@@ -54,8 +54,6 @@ def main(max_features_value):
         y_pred = model.predict(X_test_tfidf)
         accuracy = accuracy_score(y_test, y_pred)
         print(f"✅ Model Accuracy on Test Set: {accuracy:.2%}")
-        print("\nClassification Report:")
-        print(classification_report(y_test, y_pred, zero_division=0))
         
         # 6. Prepare Full Dataset
         print("\nLoading and aggregating all reviews for final prediction...")
@@ -67,7 +65,13 @@ def main(max_features_value):
         product_reviews['PredictedCategory'] = model.predict(all_reviews_tfidf)
         
         # 8. Save Final File
-        final_df = product_reviews[['ProductId', 'PredictedCategory', 'CleanedText']]  #remove 'CleanedText' for final solution per PDF
+        if is_final_run:
+            print("Saving final, production-ready output (without text column)...")
+            final_df = product_reviews[['ProductId', 'PredictedCategory']]
+        else:
+            print("Saving final output file for validation (with text column)...")
+            final_df = product_reviews[['ProductId', 'PredictedCategory', 'CleanedText']]
+        
         final_df.to_csv(FINAL_OUTPUT_FILE, index=False)
         
         print(f"\n✅ Phase 2 Complete! Final data saved to: {FINAL_OUTPUT_FILE}")
@@ -75,19 +79,22 @@ def main(max_features_value):
     except FileNotFoundError as e:
         print(f"❌ ERROR: A required file was not found. Please check paths: {e}")
         sys.exit(1)
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        sys.exit(1)
 
 if __name__ == "__main__":
-    # --- New Argument Parsing Logic ---
     parser = argparse.ArgumentParser(description="Train and run the NLP classifier.")
     parser.add_argument(
         '--max_features', 
         type=int, 
-        default=5000,  # A sensible default if no argument is given
+        default=5000,
         help='The maximum number of features for the TfidfVectorizer.'
+    )
+    # --- NEW ARGUMENT ---
+    parser.add_argument(
+        '--final',
+        action='store_true', # Makes this a True/False flag
+        help='If set, saves the final output without the CleanedText column.'
     )
     args = parser.parse_args()
     
-    main(args.max_features)
+    main(args.max_features, args.final)
+
