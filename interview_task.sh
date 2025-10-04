@@ -15,7 +15,7 @@ STEP1_SCRIPT="step_1_elt.py"
 STEP2_SCRIPT="step_2_webscraping_labelled_training_data.py"
 STEP2_5_SCRIPT="step_2.5_training_parameter_tuning_optional.py"
 STEP3_SCRIPT="step_3_NLP_data_classification.py"
-DATA_ARCHIVE="client_files/pre-scraped-data.zip"
+DATA_ARCHIVE="client_files/pre_scraped_data.zip"
 
 # --- Setup: Ensure output directory exists ---
 echo "Ensuring client_files directory exists..."
