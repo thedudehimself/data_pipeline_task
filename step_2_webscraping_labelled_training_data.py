@@ -15,8 +15,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 # --- Configuration ---
-CLEANED_REVIEWS_FILE = './output/Cleaned_Reviews.csv'
-OUTPUT_FILE = './output/product_categories_standardized.csv'
+CLEANED_REVIEWS_FILE = './client_files/Cleaned_Reviews.csv'
+OUTPUT_FILE = './client_files/product_categories_standardized.csv'
 TOTAL_PRODUCTS_TO_SCRAPE = 2500
 
 # --- Keyword Dictionary for Targeted Sampling ---

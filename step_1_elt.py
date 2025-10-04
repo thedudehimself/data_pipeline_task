@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 # --- 1. CONFIGURATION ---
 INPUT_FILE_PATH = './client_files/Reviews.csv'
-OUTPUT_FILE_PATH = './output/Cleaned_Reviews.csv'
+OUTPUT_FILE_PATH = './client_files/Cleaned_Reviews.csv'
 COLUMN_TO_CLEAN = 'Text'
 CHUNK_SIZE = 50000
 

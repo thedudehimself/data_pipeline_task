@@ -7,9 +7,9 @@ import sys
 import argparse # <-- New import for handling arguments
 
 # --- Configuration ---
-CLEANED_REVIEWS_FILE = './output/Cleaned_Reviews.csv'
-LABELED_CATEGORIES_FILE = './output/product_categories_standardized.csv'
-FINAL_OUTPUT_FILE = './output/reviews_with_predicted_categories.csv'
+CLEANED_REVIEWS_FILE = './client_files/Cleaned_Reviews.csv'
+LABELED_CATEGORIES_FILE = './client_files/product_categories_standardized.csv'
+FINAL_OUTPUT_FILE = './client_files/reviews_with_predicted_categories.csv'
 
 def main(max_features_value):
     """

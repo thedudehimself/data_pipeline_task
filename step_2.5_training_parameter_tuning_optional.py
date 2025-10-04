@@ -10,7 +10,7 @@ import warnings
 warnings.filterwarnings('ignore', category=UserWarning)
 
 # --- Configuration ---
-LABELED_CATEGORIES_FILE = './output/product_categories_standardized.csv'
+LABELED_CATEGORIES_FILE = './client_files/product_categories_standardized.csv'
 
 # --- Hyperparameters to Test ---
 # We'll test a range of vocabulary sizes for our model.
