@@ -29,7 +29,7 @@ An initial machine learning model misleadingly predicted one category ("Grocery"
 
 Based on the diagnosis, the strategy pivoted. The final pipeline uses a **targeted acquisition** process (`step_2_webscraping...py`). It pre-scans all reviews for keywords related to under-represented categories (like "Pet Supplies" or "Beauty") to create a more balanced and intelligent training dataset for the model.
 
-## 3. 🏆 Key Results & Outcome
+## 3. Key Results & Outcome
 
 The final machine learning model (`step_3_NLP...py`), trained on the intelligently-gathered data, achieved:
 
