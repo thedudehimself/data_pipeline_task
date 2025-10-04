@@ -56,27 +56,24 @@ Google Chrome browser installed in the Linux environment.
 
 Instructions:
 
-Clone the repository:
+1. Clone the repository:
 
 git clone <your-repo-url>
 cd <your-repo-name>
 
-Create and activate a Python virtual environment:
+2. Create and activate a Python virtual environment:
 
 python3 -m venv venv
 source venv/bin/activate
 
-Install dependencies:
+3. Install dependencies:
 
 pip install -r requirements.txt
 
-Place the data file:
+4. Place your raw Reviews.csv file inside the client_files directory.
 
-Create a directory named client_files.
+5. Run the master script:
 
-Place your raw Reviews.csv file inside the client_files directory.
-
-Run the master script:
 You can run the pipeline in two modes:
 
 Auto Mode (Recommended): This will run the tuning script to find the best max_features setting automatically.
