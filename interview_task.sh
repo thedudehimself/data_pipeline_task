@@ -1,12 +1,10 @@
 #!/bin/bash
 
 # ==============================================================================
-# Master Orchestration Script for Protege Interview Task (v4 - Corrected)
+# Master Orchestration Script for Protege Interview Task (v5)
 # ==============================================================================
 # This script runs the entire data processing and machine learning pipeline.
-#
-# Usage:
-#   ./interview_task.sh [--noscrape] [auto | <number>]
+# Now with improved error handling to display Python errors.
 # ==============================================================================
 
 # --- Configuration ---
@@ -25,7 +23,6 @@ mkdir -p client_files
 NOSCRAPE=false
 MAX_FEATURES_ARG=""
 
-# Loop through all arguments to correctly identify flags and values
 for arg in "$@"; do
   case $arg in
     --noscrape)
@@ -34,7 +31,6 @@ for arg in "$@"; do
     auto)
       MAX_FEATURES_ARG="auto"
       ;;
-    # Check if the argument is a number
     *)
       if [[ $arg =~ ^[0-9]+$ ]]; then
         MAX_FEATURES_ARG=$arg
@@ -72,8 +68,7 @@ if [ "$NOSCRAPE" = true ]; then
         exit 1
     fi
     
-    # Unzip the specific file into the client_files directory
-    unzip -o "$DATA_ARCHIVE" product_categories_standardized.csv -d client_files/
+    unzip -o "$DATA_ARCHIVE" product_categories_standardized.csv -d output/
     echo "✅ Pre-scraped data extracted successfully."
 else
     print_header "Running Step 2: Web Scraping for Labeled Training Data..."
@@ -83,12 +78,15 @@ fi
 # --- Step 2.5 / 3: Tuning and Classification ---
 if [ "$MAX_FEATURES_ARG" == "auto" ]; then
     print_header "Running Step 2.5 (Auto Mode): Tuning for optimal max_features..."
-    TUNE_OUTPUT=$(python3 "$STEP2_5_SCRIPT")
+    
+    # --- FIX: Capture both stdout and stderr to see any errors ---
+    TUNE_OUTPUT=$(python3 "$STEP2_5_SCRIPT" 2>&1)
     echo "$TUNE_OUTPUT"
+    
     BEST_FEATURES=$(echo "$TUNE_OUTPUT" | grep "Best performance found with" | awk '{print $7}')
     
     if [ -z "$BEST_FEATURES" ]; then
-        echo "❌ Error: Could not automatically determine the best max_features value."
+        echo "❌ Error: Could not automatically determine the best max_features value. See Python output above for details."
         exit 1
     fi
     
@@ -104,4 +102,4 @@ else
 fi
 
 print_header "🎉🎉🎉 Project Pipeline Complete! 🎉🎉🎉"
-
+k
