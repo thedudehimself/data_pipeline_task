@@ -56,7 +56,7 @@ Create a virtual environment: python3 -m venv venv && source venv/bin/activate
 
 Install dependencies: pip install -r requirements.txt
 
-Add data: Place the raw Reviews.csv and the pre-scraped-data.zip into the client_files directory.
+Add data: Place the raw Reviews.csv and the pre_scraped_data.zip into the client_files directory.
 
 Run the pipeline:
 
