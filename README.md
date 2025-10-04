@@ -84,7 +84,7 @@ The project is orchestrated by a master shell script, `interview_task.sh`, which
     # Make the script executable
     chmod +x interview_task.sh
     
-    # Run the full pipeline in auto-tuning mode, using the pre-scraped data
+    # Run the full pipeline in auto-tuning mode, using the pre-scraped data, with the final output deduplicated "final list of product IDs to product categories... you do not need to run every single row"
     ./interview_task.sh --noscrape auto
     
     ```
