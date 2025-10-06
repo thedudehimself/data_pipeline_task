@@ -4,7 +4,7 @@
 # Master Orchestration Script for Protege Interview Task (v8 - Final)
 # ==============================================================================
 # This script runs the entire data processing and machine learning pipeline.
-# Now with robust validation to reject any invalid arguments.
+# Now with robust validation and correct handling of optional arguments.
 #
 # Usage:
 #   ./interview_task.sh [--noscrape] [--final] [auto | <number>]
@@ -16,7 +16,6 @@ STEP0_SCRIPT="step_0_data_discovery.py"
 STEP1_SCRIPT="step_1_elt.py"
 STEP2_SCRIPT="step_2_webscraping_labelled_training_data.py"
 STEP2_5_SCRIPT="step_2.5_training_parameter_tuning_optional.py"
-# --- FIX: Ensure we call the version of Step 3 that accepts arguments ---
 STEP3_SCRIPT="step_3_NLP_data_classification_arg.py"
 DATA_ARCHIVE="client_files/pre_scraped_data.zip"
 RAW_DATA_FILE="client_files/Reviews.csv"
@@ -45,7 +44,6 @@ for arg in "$@"; do
       if [[ $arg =~ ^[0-9]+$ ]]; then
         MAX_FEATURES_ARG=$arg
       else
-        # --- NEW: Reject any argument that is not a recognized flag or number ---
         echo "❌ Error: Invalid argument '$arg'"
         echo "Usage: ./interview_task.sh [--noscrape] [--final] [auto | <number>]"
         exit 1
@@ -65,7 +63,6 @@ print_header() {
 # --- Script Logic ---
 if [ -z "$MAX_FEATURES_ARG" ]; then
     echo "❌ Error: Missing argument. Please provide 'auto' or a numeric value for max_features."
-    echo "Usage: ./interview_task.sh [--noscrape] [--final] [auto | <number>]"
     exit 1
 fi
 
@@ -99,11 +96,24 @@ if [ "$MAX_FEATURES_ARG" == "auto" ]; then
         exit 1
     fi
     echo "Found optimal max_features = $BEST_FEATURES"
+    
+    # --- FIX: Build argument array to handle optional flags ---
+    PYTHON_ARGS=("--max_features" "$BEST_FEATURES")
+    if [ -n "$FINAL_FLAG" ]; then
+        PYTHON_ARGS+=("$FINAL_FLAG")
+    fi
+    
     print_header "Running Step 3: NLP Classification with optimal settings..."
-    python3 "$STEP3_SCRIPT" --max_features "$BEST_FEATURES" "$FINAL_FLAG"
+    python3 "$STEP3_SCRIPT" "${PYTHON_ARGS[@]}"
 else
+    # --- FIX: Build argument array to handle optional flags ---
+    PYTHON_ARGS=("--max_features" "$MAX_FEATURES_ARG")
+    if [ -n "$FINAL_FLAG" ]; then
+        PYTHON_ARGS+=("$FINAL_FLAG")
+    fi
+
     print_header "Running Step 3 (Manual Mode): NLP Classification with max_features = $MAX_FEATURES_ARG..."
-    python3 "$STEP3_SCRIPT" --max_features "$MAX_FEATURES_ARG" "$FINAL_FLAG"
+    python3 "$STEP3_SCRIPT" "${PYTHON_ARGS[@]}"
 fi
 
 print_header "🎉🎉🎉 Project Pipeline Complete! 🎉🎉🎉"

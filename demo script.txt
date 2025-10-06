@@ -1,0 +1,17 @@
+git clone https://github.com/thedudehimself/data_pipeline_task
+
+python3 -m venv venv
+
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+*** Switch to Pre-Bake ***
+
+chmod +x ./interview_task.sh
+
+./interview_task.sh --whoops
+
+./interview_task.sh --noscrape auto
+
+./interview_task.sh --noscrape auto --final
